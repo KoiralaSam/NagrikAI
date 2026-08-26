@@ -1,0 +1,19 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: nagrikai
+      POSTGRES_PASSWORD: nagrikai
+      POSTGRES_DB: nagrikai
+    ports:
+      - "15432:5432"
+    volumes:
+      - nagrikai-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nagrikai -d nagrikai"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  nagrikai-postgres:

@@ -2,24 +2,54 @@
   "expo": {
     "name": "NagrikAI",
     "slug": "NagrikAI",
+    "scheme": "nagrikai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.nagrikai.mobile",
+      "infoPlist": {
+        "NSSpeechRecognitionUsageDescription": "Allow NagrikAI to understand Nepali and English voice requests.",
+        "NSMicrophoneUsageDescription": "Allow NagrikAI to use the microphone for voice conversation."
+      }
+    },
+    "androidStatusBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#F4F1EA",
+      "translucent": true
+    },
+    "androidNavigationBar": {
+      "barStyle": "dark-content",
+      "backgroundColor": "#F4F1EA"
     },
     "android": {
+      "package": "com.nagrikai.mobile",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "softwareKeyboardLayoutMode": "pan",
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ]
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
+    "plugins": [
+      [
+        "expo-speech-recognition",
+        {
+          "microphonePermission": "Allow NagrikAI to use the microphone for voice conversation.",
+          "speechRecognitionPermission": "Allow NagrikAI to understand Nepali and English voice requests.",
+          "androidSpeechServicePackages": [
+            "com.google.android.googlequicksearchbox",
+            "com.google.android.as"
+          ]
+        }
+      ]
+    ]
   }
 }
