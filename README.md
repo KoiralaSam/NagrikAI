@@ -19,11 +19,10 @@ npx expo run:ios
 Set the VM API URL for mobile builds:
 
 ```bash
-EXPO_PUBLIC_API_URL=http://YOUR_VM_IP:8080 npm start
+EXPO_PUBLIC_API_URL=http://34.30.50.212 npm start
 ```
 
-Android emulator default: `http://10.0.2.2:8080`.
-iOS simulator default: `http://localhost:8080`.
+Release builds bake in `http://34.30.50.212` (see `eas.json`). The production API listens on HTTP port 80.
 
 Voice conversation uses turn detection: tap the mic, speak, pause, and NagrikAI replies automatically. Open the ⋯ menu for recent conversations stored in PostgreSQL.
 

@@ -3,6 +3,7 @@ require("dotenv").config();
 const http = require("http");
 const { answerRequest } = require("./lib/intentEngine");
 const { getKnowledgeSummary } = require("./lib/knowledgeRepository");
+const { createRateLimiter } = require("./lib/rateLimit");
 const {
   createSession,
   deleteSession,
@@ -13,12 +14,27 @@ const {
 } = require("./lib/sessionRepository");
 
 const port = Number(process.env.PORT ?? 8080);
+const corsOrigin = process.env.CORS_ORIGIN || "*";
+const askLimiter = createRateLimiter({
+  windowMs: Number(process.env.ASK_RATE_WINDOW_MS ?? 60_000),
+  max: Number(process.env.ASK_RATE_MAX ?? 20),
+});
+const httpLimiter = createRateLimiter({
+  windowMs: Number(process.env.HTTP_RATE_WINDOW_MS ?? 60_000),
+  max: Number(process.env.HTTP_RATE_MAX ?? 60),
+});
+
+function corsHeaders() {
+  return {
+    "Access-Control-Allow-Origin": corsOrigin,
+    "Access-Control-Allow-Headers": "Content-Type, x-api-key",
+    "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
+  };
+}
 
 function sendJson(response, statusCode, body) {
   response.writeHead(statusCode, {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type",
-    "Access-Control-Allow-Methods": "GET,POST,DELETE,OPTIONS",
+    ...corsHeaders(),
     "Content-Type": "application/json",
   });
   response.end(JSON.stringify(body));
@@ -59,6 +75,27 @@ function readDeviceId(body, searchParams) {
   return typeof value === "string" && value.trim() ? value.trim() : "";
 }
 
+function clientIp(request) {
+  const forwarded = request.headers["x-forwarded-for"];
+  if (typeof forwarded === "string" && forwarded.trim()) {
+    return forwarded.split(",")[0].trim();
+  }
+  return request.socket?.remoteAddress || "unknown";
+}
+
+function isAuthorized(request) {
+  const expected = process.env.NAGRIKAI_API_KEY;
+  if (!expected) {
+    return true;
+  }
+  return request.headers["x-api-key"] === expected;
+}
+
+function publicResult(result) {
+  const { redactedUserText, ...visible } = result;
+  return visible;
+}
+
 const server = http.createServer(async (request, response) => {
   try {
     if (request.method === "OPTIONS") {
@@ -66,10 +103,20 @@ const server = http.createServer(async (request, response) => {
       return;
     }
 
+    if (!httpLimiter.allow(clientIp(request))) {
+      sendJson(response, 429, { error: "Too many requests." });
+      return;
+    }
+
     const { pathname, searchParams } = parseUrl(request);
 
     if (request.method === "GET" && pathname === "/health") {
       sendJson(response, 200, { ok: true });
+      return;
+    }
+
+    if (pathname.startsWith("/api/") && !isAuthorized(request)) {
+      sendJson(response, 401, { error: "Unauthorized." });
       return;
     }
 
@@ -146,9 +193,20 @@ const server = http.createServer(async (request, response) => {
       const language = body.language === "en-US" ? "en-US" : "ne-NP";
       const deviceId = readDeviceId(body);
       const sessionId = typeof body.sessionId === "string" ? body.sessionId.trim() : "";
+      const rateKey = `${clientIp(request)}:${deviceId || "anon"}`;
+
+      if (!askLimiter.allow(rateKey)) {
+        sendJson(response, 429, { error: "Too many requests." });
+        return;
+      }
 
       if (text.length < 3) {
         sendJson(response, 400, { error: "Text is required." });
+        return;
+      }
+
+      if (text.length > 4000) {
+        sendJson(response, 400, { error: "Text is too long." });
         return;
       }
 
@@ -157,12 +215,12 @@ const server = http.createServer(async (request, response) => {
         deviceId,
         sessionId,
         language,
-        userText: text,
-        result,
+        userText: result.redactedUserText,
+        result: publicResult(result),
       });
 
       sendJson(response, 200, {
-        ...result,
+        ...publicResult(result),
         session: persisted.session,
         startedNewSession: persisted.startedNewSession,
       });
@@ -170,20 +228,20 @@ const server = http.createServer(async (request, response) => {
     }
 
     sendJson(response, 404, { error: "Not found" });
-  } catch (error) {
+  } catch {
     sendJson(response, 500, {
-      error: error instanceof Error ? error.message : "Internal server error",
+      error: "Internal server error",
     });
   }
 });
 
 ensureSessionSchema()
   .then(() => {
-    server.listen(port, () => {
-      console.log(`NagrikAI server listening on http://localhost:${port}`);
+    server.listen(port, "0.0.0.0", () => {
+      console.log(`NagrikAI server listening on port ${port}`);
     });
   })
-  .catch((error) => {
-    console.error("Failed to initialize session tables.", error);
+  .catch(() => {
+    console.error("Failed to initialize session tables.");
     process.exit(1);
   });

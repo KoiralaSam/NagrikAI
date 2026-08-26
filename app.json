@@ -7,12 +7,21 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "extra": {
+      "apiUrl": "http://34.30.50.212",
+      "eas": {
+        "projectId": "4e5a604a-792a-49a6-8661-f3a0f9115181"
+      }
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.nagrikai.mobile",
       "infoPlist": {
         "NSSpeechRecognitionUsageDescription": "Allow NagrikAI to understand Nepali and English voice requests.",
-        "NSMicrophoneUsageDescription": "Allow NagrikAI to use the microphone for voice conversation."
+        "NSMicrophoneUsageDescription": "Allow NagrikAI to use the microphone for voice conversation.",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       }
     },
     "androidStatusBar": {
@@ -26,6 +35,7 @@
     },
     "android": {
       "package": "com.nagrikai.mobile",
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
@@ -50,6 +60,7 @@
           ]
         }
       ]
-    ]
+    ],
+    "owner": "koiralas2"
   }
 }

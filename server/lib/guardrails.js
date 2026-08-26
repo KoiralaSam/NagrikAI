@@ -19,6 +19,10 @@ const allowedTerms = [
   "phone",
   "email",
   "website",
+  "dao",
+  "ird",
+  "mofa",
+  "dotm",
   "नेपाल",
   "सरकार",
   "कार्यालय",
@@ -46,39 +50,148 @@ const blockedTerms = [
   "investment",
   "stock",
   "crypto",
+  "bitcoin",
   "medical diagnosis",
   "hack",
   "malware",
+  "exploit",
+  "how to make a bomb",
+  "write a poem",
+  "tell me a joke",
   "कविता",
   "मजाक",
   "रेसिपी",
   "क्रिप्टो",
 ];
 
+const abuseTerms = [
+  "fuck",
+  "fucking",
+  "motherfucker",
+  "shithead",
+  "asshole",
+  "bitch",
+  "bastard",
+  "cunt",
+  "slut",
+  "retard",
+  "dumbass",
+  "dipshit",
+  "muji",
+  "muje",
+  "madarchod",
+  "randi",
+  "chikne",
+  "chikney",
+  "bhosdike",
+  "harami",
+  "gandu",
+  "मुजी",
+  "मूर्ख",
+  "रन्डी",
+  "चिख्ने",
+  "मादरचोद",
+  "साले",
+  "बेज्जत",
+];
+
+const abusePhrases = [
+  "kill yourself",
+  "go to hell",
+  "stupid officer",
+  "dumb officer",
+  "fucking office",
+  "corrupt bastard",
+  "you are useless",
+];
+
+const jailbreakPatterns = [
+  /\bignore\s+(all\s+|any\s+)?(previous|prior|above)\s+(instructions?|rules?|prompts?)\b/i,
+  /\byou are now\b/i,
+  /\bsystem prompt\b/i,
+  /\bjailbreak\b/i,
+  /(?:^|\s)\/(?:no_)?think\b/i,
+  /<think>/i,
+  /<\/think>/i,
+  /\[INST\]/i,
+  /<\|im_start\|>/i,
+  /"contacts"\s*:/i,
+  /retrieved\s+(json|knowledge)/i,
+  /\bdo not follow (your|the) (rules|instructions)\b/i,
+  /\bpretend you are\b/i,
+  /\bdeveloper mode\b/i,
+];
+
+function escapeRegex(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function includesTerm(text, term) {
+  if (/[\u0900-\u097F]/.test(term)) {
+    return text.toLowerCase().includes(term.toLowerCase());
+  }
+
+  return new RegExp(`\\b${escapeRegex(term)}\\b`, "i").test(text);
+}
+
 function includesAny(text, terms) {
-  const lowered = text.toLowerCase();
-  return terms.some((term) => lowered.includes(term.toLowerCase()));
+  return terms.some((term) => includesTerm(text, term));
+}
+
+function hasAbuse(text) {
+  return includesAny(text, abuseTerms) || includesAny(text, abusePhrases);
+}
+
+function hasJailbreak(text) {
+  return jailbreakPatterns.some((pattern) => pattern.test(text));
+}
+
+function hasBlockedTopic(text) {
+  return includesAny(text, blockedTerms);
+}
+
+function hasAllowedScope(text) {
+  return includesAny(text, allowedTerms);
 }
 
 function evaluateScope(text) {
-  if (includesAny(text, blockedTerms)) {
-    return {
-      allowed: false,
-      reason: "blocked_topic",
-    };
+  const source = typeof text === "string" ? text : "";
+
+  if (hasAbuse(source)) {
+    return { allowed: false, reason: "abuse" };
   }
 
-  if (includesAny(text, allowedTerms)) {
-    return {
-      allowed: true,
-      reason: "government_service_scope",
-    };
+  if (hasJailbreak(source)) {
+    return { allowed: false, reason: "jailbreak" };
   }
 
-  return {
-    allowed: false,
-    reason: "not_government_service_scope",
-  };
+  if (hasBlockedTopic(source)) {
+    return { allowed: false, reason: "blocked_topic" };
+  }
+
+  if (hasAllowedScope(source)) {
+    return { allowed: true, reason: "government_service_scope" };
+  }
+
+  return { allowed: false, reason: "not_government_service_scope" };
+}
+
+function evaluateOutputSafety(text) {
+  const source = typeof text === "string" ? text : "";
+
+  if (hasAbuse(source)) {
+    return { ok: false, reason: "abuse" };
+  }
+
+  if (hasJailbreak(source)) {
+    return { ok: false, reason: "jailbreak" };
+  }
+
+  if (hasBlockedTopic(source)) {
+    return { ok: false, reason: "blocked_topic" };
+  }
+
+  return { ok: true, reason: "in_scope" };
 }
 
 function buildOutOfScopeResponse(language) {
@@ -94,6 +207,23 @@ function buildOutOfScopeResponse(language) {
   };
 }
 
+function buildBlockedResponse(language, reason) {
+  const isNepali = language === "ne-NP";
+
+  if (reason === "abuse") {
+    return {
+      intent: "out_of_scope",
+      service: isNepali ? "समर्थित विषय होइन" : "Unsupported topic",
+      confidence: "low",
+      answer: isNepali
+        ? "म गालीगलौज वा अपमानमा सहयोग गर्दिन। नेपालका सरकारी सेवाबारे मात्र सोध्नुहोस्।"
+        : "I cannot help with insults or abusive language. Please ask only about Nepal government services.",
+    };
+  }
+
+  return buildOutOfScopeResponse(language);
+}
+
 async function logGuardrailEvent({ text, language, decision, reason }) {
   await db.query(
     `
@@ -105,7 +235,9 @@ async function logGuardrailEvent({ text, language, decision, reason }) {
 }
 
 module.exports = {
+  buildBlockedResponse,
   buildOutOfScopeResponse,
+  evaluateOutputSafety,
   evaluateScope,
   logGuardrailEvent,
 };

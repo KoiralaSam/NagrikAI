@@ -1,5 +1,31 @@
 const db = require("./db");
 
+const CONSULAR_HINTS = [
+  "consular",
+  "embassy",
+  "abroad",
+  "foreign country",
+  "mission abroad",
+  "outside nepal",
+  "विदेश",
+  "दूतावास",
+  "नियोग",
+  "नेपाल बाहिर",
+];
+
+function minScore() {
+  const value = Number(process.env.RETRIEVAL_MIN_SCORE ?? 0.08);
+  return Number.isFinite(value) ? value : 0.08;
+}
+
+const NEGATED_CONSULAR =
+  /\b(not|never|without|except)\s+(?:the\s+)?(?:embassy|abroad|consular|foreign country)(?:\s+or\s+(?:the\s+)?(?:embassy|abroad|consular|foreign country))?/gi;
+
+function isConsularQuery(text) {
+  const stripped = String(text ?? "").toLowerCase().replace(NEGATED_CONSULAR, " ");
+  return CONSULAR_HINTS.some((hint) => stripped.includes(hint.toLowerCase()));
+}
+
 async function getKnowledgeSummary() {
   const { rows } = await db.query(`
     SELECT
@@ -12,7 +38,13 @@ async function getKnowledgeSummary() {
   return rows[0];
 }
 
-async function findBestService(text) {
+async function queryBestService(text, { intent } = {}) {
+  const params = [text];
+  const intentClause = intent ? "AND services.intent = $2" : "";
+  if (intent) {
+    params.push(intent);
+  }
+
   const { rows } = await db.query(
     `
     SELECT
@@ -36,41 +68,43 @@ async function findBestService(text) {
     FROM services
     JOIN agencies ON agencies.id = services.agency_id
     JOIN service_aliases ON service_aliases.service_id = services.id
-    WHERE lower($1) LIKE '%' || lower(service_aliases.alias) || '%'
-       OR lower(service_aliases.alias) % lower($1)
-       OR lower(services.name) % lower($1)
+    WHERE (
+        lower($1) LIKE '%' || lower(service_aliases.alias) || '%'
+        OR lower(service_aliases.alias) % lower($1)
+        OR lower(services.name) % lower($1)
+      )
+      ${intentClause}
     GROUP BY services.id, agencies.id
     ORDER BY score DESC NULLS LAST
     LIMIT 1
     `,
-    [text],
+    params,
   );
 
-  if (rows.length > 0) {
-    return rows[0];
+  const service = rows[0];
+  if (!service || Number(service.score) < minScore()) {
+    return null;
   }
 
-  const fallback = await db.query(`
-    SELECT
-      services.id,
-      services.name,
-      services.intent,
-      services.summary_ne,
-      services.summary_en,
-      agencies.id AS agency_id,
-      agencies.name AS agency_name,
-      agencies.parent,
-      agencies.address,
-      agencies.last_verified_at,
-      agencies.verification_status,
-      0 AS score
-    FROM services
-    JOIN agencies ON agencies.id = services.agency_id
-    WHERE services.intent = 'consular_abroad_help'
-    LIMIT 1
-  `);
+  return service;
+}
 
-  return fallback.rows[0] ?? null;
+async function findBestService(text) {
+  if (isConsularQuery(text)) {
+    const consular = await queryBestService(text, {
+      intent: "consular_abroad_help",
+    });
+    if (consular) {
+      return consular;
+    }
+  }
+
+  const service = await queryBestService(text);
+  if (service?.intent === "consular_abroad_help" && !isConsularQuery(text)) {
+    return null;
+  }
+
+  return service;
 }
 
 async function getAgencyContacts(agencyId) {
@@ -121,4 +155,5 @@ module.exports = {
   getAgencySources,
   getKnowledgeSummary,
   getServiceNotes,
+  isConsularQuery,
 };
