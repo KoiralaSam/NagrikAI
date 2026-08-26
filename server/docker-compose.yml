@@ -6,7 +6,7 @@ services:
       POSTGRES_PASSWORD: nagrikai
       POSTGRES_DB: nagrikai
     ports:
-      - "15432:5432"
+      - "127.0.0.1:15432:5432"
     volumes:
       - nagrikai-postgres:/var/lib/postgresql/data
     healthcheck:
