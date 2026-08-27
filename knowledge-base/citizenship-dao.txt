@@ -1,0 +1,13 @@
+---
+intent: citizenship_certificate_help
+title: Citizenship certificate copy or replacement
+source_url: https://moha.gov.np
+verified_at: 2026-08-26
+verification_status: verified
+---
+
+Lost citizenship certificates and requests for a copy are handled by your District Administration Office under the Ministry of Home Affairs.
+
+You will need to apply at the DAO that covers your permanent address or the district recorded on your citizenship. Supporting documents commonly include a written application, a copy if any remains, and identity witnesses as required by that office.
+
+Because local requirements vary by district, ask which DAO applies to you before travelling. Use the Ministry of Home Affairs site to find district office information.

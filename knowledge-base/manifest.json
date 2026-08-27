@@ -1,0 +1,8 @@
+{
+  "passport-lost.txt": {
+    "intent": "passport_problem"
+  },
+  "passport-where-to-apply.txt": {
+    "intent": "passport_problem"
+  }
+}

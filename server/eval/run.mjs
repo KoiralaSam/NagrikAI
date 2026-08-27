@@ -14,6 +14,8 @@ process.env.ENABLE_LLM = process.env.EVAL_ENABLE_LLM || "false";
 const { redactPii } = require("../lib/pii.js");
 const { evaluateScope } = require("../lib/guardrails.js");
 const { isGroundedReply, stripThink } = require("../lib/aiResponder.js");
+const { chunkText } = require("../lib/chunker.js");
+const { parseFrontmatter } = require("../lib/documentParser.js");
 const { answerRequest } = require("../lib/intentEngine.js");
 const db = require("../lib/db.js");
 
@@ -109,6 +111,26 @@ function runUnitTests(results) {
   const grounded = isGroundedReply("Call +97715970330", [{ value: "+97715970330" }], []);
   const ungrounded = isGroundedReply("Call 9800000000", [{ value: "+97715970330" }], []);
   record(results, grounded && !ungrounded, "unit:grounding", "invented phone rejected");
+
+  const parsed = parseFrontmatter(
+    "---\nintent: passport_problem\nverification_status: verified\n---\nLost passport guidance.",
+  );
+  record(
+    results,
+    parsed.data.intent === "passport_problem" &&
+      parsed.data.verification_status === "verified" &&
+      parsed.body.includes("Lost passport"),
+    "unit:frontmatter",
+    "knowledge-base frontmatter parsed",
+  );
+
+  const chunks = chunkText("A".repeat(200) + ". " + "B".repeat(200), 180, 20);
+  record(
+    results,
+    chunks.length >= 2 && chunks.every((chunk) => chunk.length <= 180),
+    "unit:chunker",
+    `chunks=${chunks.length}`,
+  );
 }
 
 async function dbReady() {

@@ -18,6 +18,7 @@ async function main() {
   await pool.end();
 
   console.log("PostgreSQL schema and seed data applied.");
+  console.log("Embed knowledge-base documents with: npm run ingest-knowledge");
 }
 
 main().catch((error) => {

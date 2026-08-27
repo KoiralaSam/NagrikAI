@@ -1,0 +1,13 @@
+---
+intent: passport_problem
+title: Lost or stolen passport
+source_url: https://nepalpassport.gov.np/en
+verified_at: 2026-08-26
+verification_status: verified
+---
+
+A Nepal passport reported as lost or stolen should not be used for travel even if it is later recovered. Report the loss and apply for a replacement through the Department of Passports, a District Administration Office, an Area Administration Office, or a Nepali diplomatic mission abroad.
+
+Bring identity documents that prove Nepali citizenship and any police or written report required by the office that will process the replacement. Ask the receiving office which supporting documents they currently accept before travelling.
+
+Urgent replacement is handled in Kathmandu at the Department of Passports. Regular service is available from district and area offices inside Nepal and from missions abroad. Use the official Department of Passports website for current forms and office notices.

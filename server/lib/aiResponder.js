@@ -1,8 +1,6 @@
 const { hasUnexpectedPii } = require("./pii");
 const { evaluateOutputSafety } = require("./guardrails");
-
-const MAX_ANSWER_CHARS = 900;
-const MAX_NEW_TOKENS = 384;
+const config = require("./config");
 
 function systemPrompt(language, { local = false } = {}) {
   const responseLanguage =
@@ -13,6 +11,7 @@ function systemPrompt(language, { local = false } = {}) {
     "You are NagrikAI, a narrow Nepal government-service navigator.",
     "Only answer questions about Nepal government services, offices, contacts, process guidance, and citizen message drafting.",
     "Use only the supplied retrieved JSON. Do not add phone numbers, emails, URLs, offices, fees, or procedures that are not in that JSON.",
+    "retrievedChunks are process notes from verified documents. contacts and sources remain the only allowed contact details.",
     "If retrieved knowledge is incomplete, say what is missing and ask one useful follow-up question.",
     "Do not answer general knowledge, entertainment, shopping, coding, political persuasion, medical, legal strategy, financial, or personal advice requests.",
     "Do not emit <think> tags or hidden scratchpads.",
@@ -116,9 +115,9 @@ async function completeOllamaChat({ messages, baseUrl, model }) {
       stream: false,
       think: false,
       options: {
-        temperature: 0.3,
+        temperature: config.ollamaTemperature,
         top_p: 0.8,
-        num_predict: MAX_NEW_TOKENS,
+        num_predict: config.maxNewTokens,
       },
     }),
     signal: AbortSignal.timeout(45_000),
@@ -142,8 +141,8 @@ async function completeOpenAiChat({ messages, baseUrl, model, apiKey }) {
     },
     body: JSON.stringify({
       model,
-      temperature: 0.2,
-      max_tokens: MAX_NEW_TOKENS,
+      temperature: config.openaiTemperature,
+      max_tokens: config.maxNewTokens,
       messages,
     }),
     signal: AbortSignal.timeout(45_000),
@@ -167,7 +166,7 @@ async function completeChat(llm) {
 }
 
 function isSafeReply(reply, contacts, sources) {
-  if (!reply || reply.length > MAX_ANSWER_CHARS) {
+  if (!reply || reply.length > config.maxAnswerChars) {
     return false;
   }
 
@@ -192,6 +191,7 @@ async function buildGroundedReply({
   contacts,
   sources,
   notes,
+  chunks = [],
   language,
 }) {
   const fallback = buildFallbackReply({ service, notes, language });
@@ -221,6 +221,11 @@ async function buildGroundedReply({
             contacts,
             sources,
             notes,
+            retrievedChunks: chunks.map((chunk) => ({
+              title: chunk.title,
+              content: chunk.content,
+              source_url: chunk.sourceUrl,
+            })),
           }),
         },
       ],

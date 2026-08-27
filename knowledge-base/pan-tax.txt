@@ -1,0 +1,13 @@
+---
+intent: pan_tax_help
+title: PAN and tax office routing
+source_url: https://ird.gov.np/pages/get-in-touch/
+verified_at: 2026-08-26
+verification_status: verified
+---
+
+PAN registration, taxpayer services, and most Inland Revenue questions are handled by the Inland Revenue Department or the nearest Inland Revenue Office.
+
+IRD publishes central contact information and office-wise information officer details on its official get-in-touch page. Use that page for current office lists rather than unofficial directories.
+
+If you already have a PAN, take it when you visit a revenue office. If you do not, ask the nearest IRD office how to apply and which identity documents they require.

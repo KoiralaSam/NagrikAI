@@ -1,0 +1,13 @@
+---
+intent: passport_problem
+title: Where to apply for a passport
+source_url: https://nepalpassport.gov.np/en
+verified_at: 2026-08-26
+verification_status: verified
+---
+
+Ordinary passport applications are processed by the Department of Passports in Tripureshwor, Kathmandu, and by District Administration Offices, Area Administration Offices, and Nepali missions abroad.
+
+Urgent passport service is available at the Department of Passports in Kathmandu. Regular service is available from DAOs, AAOs, and diplomatic missions. e-passport notices and application instructions are published on the official Department of Passports website.
+
+If you are unsure which office covers your district, start with your District Administration Office or the Department of Passports enquiry channels stored in NagrikAI contacts.

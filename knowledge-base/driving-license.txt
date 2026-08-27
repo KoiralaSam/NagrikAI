@@ -1,0 +1,13 @@
+---
+intent: driving_license_help
+title: Driving license renewal
+source_url: https://www.dotm.gov.np
+verified_at: 2026-08-26
+verification_status: verified
+---
+
+Driving license renewal, replacement, and related transport-permit questions are handled by a Transport Management Office under the Department of Transport Management.
+
+Take the existing license if you still have it, plus identity documents the office asks for. Renewal windows and medical or biometrics requirements can change, so check the Department of Transport Management website or the local transport office before you visit.
+
+NagrikAI can point you to the official DOTM site. It does not invent a local office phone number that is not stored in the verified contacts table.

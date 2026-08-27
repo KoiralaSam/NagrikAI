@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const http = require("http");
 const { answerRequest } = require("./lib/intentEngine");
-const { getKnowledgeSummary } = require("./lib/knowledgeRepository");
+const { ensureVectorSchema, getKnowledgeSummary } = require("./lib/knowledgeRepository");
 const { createRateLimiter } = require("./lib/rateLimit");
 const {
   createSession,
@@ -236,6 +236,7 @@ const server = http.createServer(async (request, response) => {
 });
 
 ensureSessionSchema()
+  .then(() => ensureVectorSchema())
   .then(() => {
     server.listen(port, "0.0.0.0", () => {
       console.log(`NagrikAI server listening on port ${port}`);

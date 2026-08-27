@@ -1,4 +1,5 @@
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
+CREATE EXTENSION IF NOT EXISTS vector;
 
 CREATE TABLE IF NOT EXISTS agencies (
   id SERIAL PRIMARY KEY,
@@ -52,6 +53,33 @@ CREATE TABLE IF NOT EXISTS knowledge_notes (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS knowledge_documents (
+  id SERIAL PRIMARY KEY,
+  filename TEXT NOT NULL UNIQUE,
+  title TEXT NOT NULL,
+  checksum TEXT NOT NULL,
+  service_id INTEGER REFERENCES services(id) ON DELETE CASCADE,
+  agency_id INTEGER REFERENCES agencies(id) ON DELETE CASCADE,
+  source_url TEXT,
+  verified_at DATE,
+  verification_status TEXT NOT NULL DEFAULT 'unverified',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS knowledge_chunks (
+  id SERIAL PRIMARY KEY,
+  document_id INTEGER NOT NULL REFERENCES knowledge_documents(id) ON DELETE CASCADE,
+  service_id INTEGER REFERENCES services(id) ON DELETE CASCADE,
+  agency_id INTEGER REFERENCES agencies(id) ON DELETE CASCADE,
+  chunk_index INTEGER NOT NULL,
+  content TEXT NOT NULL,
+  embedding vector(1024),
+  source_url TEXT,
+  verified_at DATE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS guardrail_events (
   id SERIAL PRIMARY KEY,
   user_text TEXT NOT NULL,
@@ -66,6 +94,12 @@ CREATE INDEX IF NOT EXISTS service_aliases_alias_trgm_idx
 
 CREATE INDEX IF NOT EXISTS services_name_trgm_idx
   ON services USING GIN (name gin_trgm_ops);
+
+CREATE INDEX IF NOT EXISTS knowledge_chunks_service_id_idx
+  ON knowledge_chunks (service_id);
+
+CREATE INDEX IF NOT EXISTS knowledge_chunks_embedding_hnsw_idx
+  ON knowledge_chunks USING hnsw (embedding vector_cosine_ops);
 
 CREATE TABLE IF NOT EXISTS chat_sessions (
   id TEXT PRIMARY KEY,

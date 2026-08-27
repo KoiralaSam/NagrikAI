@@ -1,0 +1,13 @@
+---
+intent: consular_abroad_help
+title: Consular and emergency help abroad
+source_url: https://mofa.gov.np/contact-us/
+verified_at: 2026-08-26
+verification_status: verified
+---
+
+Nepali citizens who need emergency or consular help outside Nepal should contact the Ministry of Foreign Affairs or the nearest Nepali embassy, permanent mission, or consulate.
+
+MoFA publishes general inquiry channels for complaints and suggestions. The relevant mission can advise on lost travel documents, detention, hospitalization, and other consular situations. Say which country or state you are in so the correct mission can be identified.
+
+Do not treat social-media pages as a substitute for the official MoFA contact page when you need an emergency response.

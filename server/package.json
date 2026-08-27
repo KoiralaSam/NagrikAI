@@ -7,10 +7,12 @@
   "scripts": {
     "start": "node server.js",
     "init-db": "node scripts/init-db.js",
+    "ingest-knowledge": "node scripts/ingest-knowledge.js",
     "eval": "node eval/run.mjs"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
+    "mammoth": "^1.11.0",
     "pg": "^8.16.3"
   }
 }

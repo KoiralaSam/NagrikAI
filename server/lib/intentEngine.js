@@ -1,10 +1,12 @@
 const {
   findBestService,
+  findVerifiedChunks,
   getAgencyContacts,
   getAgencySources,
   getServiceNotes,
 } = require("./knowledgeRepository");
 const { buildGroundedReply } = require("./aiResponder");
+const config = require("./config");
 const {
   buildBlockedResponse,
   evaluateScope,
@@ -18,7 +20,7 @@ function normalizeLanguage(language) {
 }
 
 function confidenceFrom(service) {
-  if (!service || Number(service.score) < 0.08) {
+  if (!service || Number(service.score) < config.retrievalMinScore) {
     return "low";
   }
 
@@ -104,10 +106,11 @@ async function answerRequest({ text, language }) {
     return withRedactedMeta(buildUnknownResponse(selectedLanguage), redactedText);
   }
 
-  const [contacts, sources, notes] = await Promise.all([
+  const [contacts, sources, notes, chunks] = await Promise.all([
     getAgencyContacts(service.agency_id),
     getAgencySources(service.agency_id),
     getServiceNotes(service.id),
+    findVerifiedChunks(redactedText, { serviceId: service.id }),
   ]);
   const answer = await buildGroundedReply({
     userText: redactedText,
@@ -115,6 +118,7 @@ async function answerRequest({ text, language }) {
     contacts,
     sources,
     notes,
+    chunks,
     language: selectedLanguage,
   });
 
