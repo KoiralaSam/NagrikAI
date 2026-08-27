@@ -1,0 +1,24 @@
+name: Mobile Release
+
+# Manual / dashboard builds on EAS. Auto-release on GitHub push is handled by
+# .github/workflows/eas-mobile-release.yml (builds on EAS, then publishes a
+# GitHub Release). Connect the Expo GitHub app if you want to run this from
+# https://expo.dev/accounts/koiralas2/projects/NagrikAI/workflows
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build_android:
+    name: Android APK
+    type: build
+    params:
+      platform: android
+      profile: preview
+
+  build_ios_simulator:
+    name: iOS Simulator
+    type: build
+    params:
+      platform: ios
+      profile: preview-simulator

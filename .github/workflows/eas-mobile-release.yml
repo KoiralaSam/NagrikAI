@@ -1,0 +1,163 @@
+name: EAS Mobile Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "android/**"
+      - "ios/**"
+      - "app.json"
+      - "eas.json"
+      - "package.json"
+      - "package-lock.json"
+      - "assets/**"
+      - "src/**"
+      - "App.tsx"
+      - "index.ts"
+      - ".github/workflows/eas-mobile-release.yml"
+
+concurrency:
+  group: eas-mobile-release-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and release
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Setup Expo and EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Resolve release version
+        id: meta
+        run: |
+          set -euo pipefail
+          VERSION="$(node -p "require('./app.json').expo.version")"
+          TAG="v${VERSION}"
+          if git rev-parse "refs/tags/${TAG}" >/dev/null 2>&1 || gh release view "${TAG}" >/dev/null 2>&1; then
+            TAG="v${VERSION}-build.${GITHUB_RUN_NUMBER}"
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Resolved release ${TAG} (app version ${VERSION})"
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+      - name: Build Android APK on EAS
+        id: android
+        run: |
+          set -euo pipefail
+          eas build \
+            --platform android \
+            --profile preview \
+            --non-interactive \
+            --wait \
+            --json > /tmp/eas-android.json
+          python3 - <<'PY'
+          import json, pathlib
+          data = json.loads(pathlib.Path("/tmp/eas-android.json").read_text())
+          build = data[0] if isinstance(data, list) else data
+          arts = build.get("artifacts") or {}
+          url = arts.get("buildUrl") or arts.get("applicationArchiveUrl")
+          if not url:
+              raise SystemExit(f"Android build finished without artifact URL: {json.dumps(build, indent=2)[:2000]}")
+          pathlib.Path("/tmp/android-url.txt").write_text(url)
+          print(url)
+          PY
+          echo "url=$(cat /tmp/android-url.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Build iOS Simulator on EAS
+        id: ios
+        run: |
+          set -euo pipefail
+          eas build \
+            --platform ios \
+            --profile preview-simulator \
+            --non-interactive \
+            --wait \
+            --json > /tmp/eas-ios.json
+          python3 - <<'PY'
+          import json, pathlib
+          data = json.loads(pathlib.Path("/tmp/eas-ios.json").read_text())
+          build = data[0] if isinstance(data, list) else data
+          arts = build.get("artifacts") or {}
+          url = arts.get("buildUrl") or arts.get("applicationArchiveUrl")
+          if not url:
+              raise SystemExit(f"iOS build finished without artifact URL: {json.dumps(build, indent=2)[:2000]}")
+          pathlib.Path("/tmp/ios-url.txt").write_text(url)
+          print(url)
+          PY
+          echo "url=$(cat /tmp/ios-url.txt)" >> "$GITHUB_OUTPUT"
+
+      - name: Download artifacts
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/nagrikai-release
+          VERSION="${{ steps.meta.outputs.version }}"
+          curl -fsSL "${{ steps.android.outputs.url }}" \
+            -o "/tmp/nagrikai-release/NagrikAI-${VERSION}-android.apk"
+          curl -fsSL "${{ steps.ios.outputs.url }}" \
+            -o "/tmp/nagrikai-release/NagrikAI-${VERSION}-ios-simulator.tar.gz"
+          ls -lh /tmp/nagrikai-release
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.meta.outputs.version }}
+          TAG: ${{ steps.meta.outputs.tag }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          SHORT_SHA="$(echo "$SHA" | cut -c1-7)"
+          NOTES="$(cat <<EOF
+          Automated EAS mobile release for \`${SHORT_SHA}\`.
+
+          ## Downloads
+          - Android APK: \`NagrikAI-${VERSION}-android.apk\`
+          - iOS Simulator: \`NagrikAI-${VERSION}-ios-simulator.tar.gz\`
+
+          Builds use the \`preview\` (Android APK) and \`preview-simulator\` (iOS) EAS profiles.
+          The app talks to the VM API baked into \`eas.json\`.
+
+          ## Android
+          1. Download the APK.
+          2. Allow install from this source, then open it.
+
+          ## iOS
+          Simulator only. Extract the archive and install with:
+          \`\`\`bash
+          xcrun simctl install booted NagrikAI.app
+          \`\`\`
+          A device-signed IPA still needs an Apple Developer account.
+          EOF
+          )"
+          gh release create "$TAG" \
+            "/tmp/nagrikai-release/NagrikAI-${VERSION}-android.apk" \
+            "/tmp/nagrikai-release/NagrikAI-${VERSION}-ios-simulator.tar.gz" \
+            --title "NagrikAI ${VERSION}" \
+            --latest \
+            --notes "$NOTES" \
+            --target "$SHA"

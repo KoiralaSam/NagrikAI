@@ -26,6 +26,23 @@ Release builds bake in `EXPO_PUBLIC_API_URL` from `eas.json`. The production API
 
 Voice conversation uses turn detection: tap the mic, speak, pause, and NagrikAI replies automatically. Open the ⋯ menu for recent conversations stored in PostgreSQL.
 
+### Auto release (EAS + GitHub Actions)
+
+Pushing to `master` that touches Android/iOS (or app config/assets that ship in the native binary) runs [`.github/workflows/eas-mobile-release.yml`](.github/workflows/eas-mobile-release.yml):
+
+1. EAS Build: Android APK (`preview`) + iOS Simulator (`preview-simulator`)
+2. GitHub Release with those artifacts attached
+
+One-time setup:
+
+1. Create an Expo access token: [expo.dev/settings/access-tokens](https://expo.dev/settings/access-tokens)
+2. Add repo secret `EXPO_TOKEN` (GitHub → Settings → Secrets and variables → Actions)
+3. Optional: connect the Expo GitHub app under the project’s GitHub settings so [`.eas/workflows/mobile-release.yml`](.eas/workflows/mobile-release.yml) can also run from the EAS dashboard
+
+Manual run: Actions → **EAS Mobile Release** → Run workflow.
+
+If tag `vX.Y.Z` already exists for `app.json`’s version, CI publishes `vX.Y.Z-build.<run>` instead.
+
 ## Server
 
 ```bash
@@ -61,6 +78,8 @@ Endpoints:
 Government **contacts and offices** live in PostgreSQL tables (`agencies`, `services`, `aliases`, `contacts`, `sources`). The model may only cite those rows.
 
 Process guidance is ingested from the `knowledge-base/` folder (`.txt`, `.md`, `.docx`). `npm run ingest-knowledge` chunks verified files, embeds them with **Qwen3-Embedding-0.6B**, and stores vectors in `pgvector`. Retrieval is fail-closed: a service must match first, then only that service’s verified chunks are added to the prompt. Unverified files are stored but never retrieved. The mobile app does not own government contact data.
+
+`npm run crawl-knowledge` (from `server/`) refreshes verified contacts, notes, and embeddings from allowlisted official websites. Dated official social/RSS items older than 90 days are ignored.
 
 ## Guardrails
 
