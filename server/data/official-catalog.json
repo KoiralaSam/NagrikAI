@@ -1,0 +1,674 @@
+{
+  "extraHosts": [
+    "www.nrb.org.np",
+    "nrb.org.np",
+    "www.ntc.net.np",
+    "ntc.net.np",
+    "www.nea.org.np",
+    "nea.org.np",
+    "www.cit.org.np",
+    "cit.org.np",
+    "www.epfnepal.com",
+    "epfnepal.com",
+    "www.ctevt.org.np",
+    "ctevt.org.np",
+    "neb.gov.np",
+    "www.neb.gov.np",
+    "www.molcpa.gov.np",
+    "molcpa.gov.np"
+  ],
+  "emailDomains": [
+    "nrb.org.np",
+    "ntc.net.np",
+    "nea.org.np",
+    "cit.org.np",
+    "epfnepal.com",
+    "ctevt.org.np"
+  ],
+  "linkPatterns": [
+    "contact",
+    "get-in-touch",
+    "about",
+    "notice",
+    "news",
+    "press",
+    "faq",
+    "service",
+    "citizen",
+    "charter",
+    "download",
+    "apply",
+    "sifaris",
+    "notice-board",
+    "enquiry",
+    "hotline"
+  ],
+  "agencies": [
+    {
+      "name": "Department of Passports",
+      "parent": "Ministry of Foreign Affairs",
+      "address": "Tripureshwor, Kathmandu, Nepal",
+      "intent": "passport_problem",
+      "serviceName": "Passport help",
+      "summary_en": "Passport issues are handled by the Department of Passports, district offices, or Nepal missions abroad.",
+      "summary_ne": "राहदानी सम्बन्धी समस्या राहदानी विभाग वा जिल्ला/नियोग सेवा मार्फत हेरिन्छ।",
+      "aliases": [
+        "passport",
+        "राहदानी",
+        "पासपोर्ट",
+        "e-passport",
+        "Mero passport harayo"
+      ],
+      "seeds": [
+        "https://nepalpassport.gov.np/en",
+        "https://nepalpassport.gov.np"
+      ]
+    },
+    {
+      "name": "Ministry of Foreign Affairs",
+      "parent": "Government of Nepal",
+      "address": "Singhadurbar, Kathmandu, Nepal",
+      "intent": "consular_abroad_help",
+      "serviceName": "Consular and abroad help",
+      "summary_en": "For abroad or consular issues, contact the Ministry of Foreign Affairs or the relevant Nepal mission.",
+      "summary_ne": "विदेशमा आपतकालीन वा कन्सुलर समस्या भए परराष्ट्र मन्त्रालय/सम्बन्धित नेपाली नियोगसँग सम्पर्क गर्नुहोस्।",
+      "aliases": [
+        "consular",
+        "embassy",
+        "विदेश",
+        "abroad",
+        "दूतावास"
+      ],
+      "seeds": [
+        "https://mofa.gov.np/contact-us/",
+        "https://mofa.gov.np/"
+      ],
+      "social": [
+        {
+          "network": "facebook",
+          "url": "https://www.facebook.com/MOFANEPAL/"
+        },
+        {
+          "network": "twitter",
+          "url": "https://x.com/mofanepal",
+          "handle": "mofanepal"
+        }
+      ]
+    },
+    {
+      "name": "Department of Consular Services",
+      "parent": "Ministry of Foreign Affairs",
+      "address": "Tripureshwor, Kathmandu, Nepal",
+      "intent": "document_attestation_help",
+      "serviceName": "Document attestation and consular services in Nepal",
+      "summary_en": "Document attestation, NRN, and related consular paperwork inside Nepal are handled by the Department of Consular Services.",
+      "summary_ne": "कागजात प्रमाणीकरण, एनआरएन र स्वदेशमा कन्सुलर सेवा कन्सुलर सेवा विभागले हेर्छ।",
+      "aliases": [
+        "attestation",
+        "प्रमाणीकरण",
+        "nrn",
+        "consular services kathmandu"
+      ],
+      "seeds": [
+        "https://www.nepalconsular.gov.np/",
+        "https://nepalconsular.gov.np/"
+      ]
+    },
+    {
+      "name": "Inland Revenue Department",
+      "parent": "Ministry of Finance",
+      "address": "Lazimpat, Kathmandu, Nepal",
+      "intent": "pan_tax_help",
+      "serviceName": "PAN and tax help",
+      "summary_en": "PAN and tax matters are handled by the Inland Revenue Department or the nearest revenue office.",
+      "summary_ne": "PAN वा कर सम्बन्धी विषय आन्तरिक राजस्व विभाग वा नजिकको आन्तरिक राजस्व कार्यालयले हेर्छ।",
+      "aliases": [
+        "pan",
+        "tax",
+        "कर",
+        "VAT",
+        "आन्तरिक राजस्व",
+        "IRD"
+      ],
+      "seeds": [
+        "https://ird.gov.np/pages/get-in-touch/",
+        "https://ird.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Customs",
+      "parent": "Ministry of Finance",
+      "address": "Tripureshwor, Kathmandu, Nepal",
+      "intent": "customs_help",
+      "serviceName": "Customs and cargo help",
+      "summary_en": "Import/export clearance and customs duty questions are handled by the Department of Customs.",
+      "summary_ne": "आयात/निर्यात जाँचपास र भन्सार महसुल भन्सार विभागले हेर्छ।",
+      "aliases": [
+        "customs",
+        "भन्सार",
+        "import duty"
+      ],
+      "seeds": [
+        "https://www.customs.gov.np/",
+        "https://customs.gov.np/"
+      ]
+    },
+    {
+      "name": "Nepal Rastra Bank",
+      "parent": "Government of Nepal",
+      "address": "Baluwatar, Kathmandu, Nepal",
+      "intent": "nrb_banking_help",
+      "serviceName": "Central bank and banking regulation help",
+      "summary_en": "Banking regulation, foreign exchange notices, and central-bank information are published by Nepal Rastra Bank.",
+      "summary_ne": "बैंकिङ नियमन, विदेशी विनिमय सूचना र केन्द्रीय बैंक जानकारी नेपाल राष्ट्र बैंकले प्रकाशन गर्छ।",
+      "aliases": [
+        "NRB",
+        "rastra bank",
+        "राष्ट्र बैंक",
+        "foreign exchange",
+        "banking"
+      ],
+      "seeds": [
+        "https://www.nrb.org.np/",
+        "https://nrb.org.np/"
+      ]
+    },
+    {
+      "name": "Employees Provident Fund",
+      "parent": "Government of Nepal",
+      "address": "Pulchowk, Lalitpur, Nepal",
+      "intent": "epf_help",
+      "serviceName": "Provident fund help",
+      "summary_en": "Employee provident fund contributions, claims, and account services are handled by the Employees Provident Fund.",
+      "summary_ne": "कर्मचारी सञ्चय कोष योगदान, दाबी र खाता सेवा कर्मचारी सञ्चय कोषले हेर्छ।",
+      "aliases": [
+        "EPF",
+        "provident fund",
+        "सञ्चय कोष",
+        "sanchaya kosh"
+      ],
+      "seeds": [
+        "https://www.epfnepal.com/",
+        "https://epfnepal.gov.np/"
+      ]
+    },
+    {
+      "name": "Citizen Investment Trust",
+      "parent": "Government of Nepal",
+      "address": "Kathmandu, Nepal",
+      "intent": "cit_help",
+      "serviceName": "Citizen Investment Trust help",
+      "summary_en": "CIT savings and retirement schemes are administered by the Citizen Investment Trust.",
+      "summary_ne": "नागरिक लगानी कोष बचत तथा अवकाश योजना नागरिक लगानी कोषले सञ्चालन गर्छ।",
+      "aliases": [
+        "CIT",
+        "नागरिक लगानी कोष",
+        "citizen investment"
+      ],
+      "seeds": [
+        "https://www.cit.org.np/",
+        "https://cit.org.np/en"
+      ]
+    },
+    {
+      "name": "District Administration Office",
+      "parent": "Ministry of Home Affairs",
+      "address": "User district office, Nepal",
+      "intent": "citizenship_certificate_help",
+      "serviceName": "Citizenship certificate help",
+      "summary_en": "Lost citizenship certificate or copy requests are handled by your District Administration Office.",
+      "summary_ne": "नागरिकता हराएको वा प्रतिलिपि चाहिएको विषय आफ्नो जिल्ला प्रशासन कार्यालयले हेर्छ।",
+      "aliases": [
+        "citizenship",
+        "नागरिकता",
+        "nagarikta"
+      ],
+      "seeds": [
+        "https://moha.gov.np/",
+        "https://www.moha.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of National ID and Civil Registration",
+      "parent": "Ministry of Home Affairs",
+      "address": "Kathmandu, Nepal",
+      "intent": "national_id_help",
+      "serviceName": "National ID and civil registration",
+      "summary_en": "National ID cards and civil registration (birth, death, marriage) are handled by the Department of National ID and Civil Registration and local registration offices.",
+      "summary_ne": "राष्ट्रिय परिचयपत्र तथा जन्म/मृत्यु/विवाह दर्ता राष्ट्रिय परिचयपत्र तथा पञ्जीकरण विभाग र स्थानीय पञ्जिकाधिकारी कार्यालयले हेर्छन्।",
+      "aliases": [
+        "national id",
+        "राष्ट्रिय परिचयपत्र",
+        "birth registration",
+        "जन्म दर्ता",
+        "nid"
+      ],
+      "seeds": [
+        "https://donidcr.gov.np/",
+        "https://www.donidcr.gov.np/"
+      ]
+    },
+    {
+      "name": "Election Commission Nepal",
+      "parent": "Government of Nepal",
+      "address": "Kantipath, Kathmandu, Nepal",
+      "intent": "voter_id_help",
+      "serviceName": "Voter roll and election help",
+      "summary_en": "Voter registration and election information are handled by the Election Commission Nepal.",
+      "summary_ne": "मतदाता नामावली र निर्वाचन जानकारी निर्वाचन आयोग नेपालले हेर्छ।",
+      "aliases": [
+        "voter id",
+        "मतदाता",
+        "election",
+        "निर्वाचन"
+      ],
+      "seeds": [
+        "https://election.gov.np/np/",
+        "https://election.gov.np/"
+      ]
+    },
+    {
+      "name": "Nepal Police",
+      "parent": "Ministry of Home Affairs",
+      "address": "Naxal, Kathmandu, Nepal",
+      "intent": "police_report_help",
+      "serviceName": "Police report and emergency help",
+      "summary_en": "First information reports, lost-document police reports, and emergencies are handled by Nepal Police.",
+      "summary_ne": "जाहेरी, हराएको कागजातको रिपोर्ट र आपतकालीन सहयोग नेपाल प्रहरीले हेर्छ।",
+      "aliases": [
+        "police",
+        "प्रहरी",
+        "FIR",
+        "जाहेरी",
+        "lost report"
+      ],
+      "seeds": [
+        "https://www.nepalpolice.gov.np/",
+        "https://nepalpolice.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Immigration",
+      "parent": "Ministry of Home Affairs",
+      "address": "Kalikasthan, Kathmandu, Nepal",
+      "intent": "immigration_visa_help",
+      "serviceName": "Immigration and visa help",
+      "summary_en": "Entry, exit, visas, and stay permits are handled by the Department of Immigration.",
+      "summary_ne": "भिसा, प्रवेश/बहिर्गमन र बसोबास अनुमति अध्यागमन विभागले हेर्छ।",
+      "aliases": [
+        "immigration",
+        "visa",
+        "अध्यागमन",
+        "tourist visa"
+      ],
+      "seeds": [
+        "https://www.immigration.gov.np/page/contact-us",
+        "https://www.immigration.gov.np/"
+      ]
+    },
+    {
+      "name": "Ministry of Labour, Employment and Social Security",
+      "parent": "Government of Nepal",
+      "address": "Singhadurbar, Kathmandu, Nepal",
+      "intent": "labor_office_help",
+      "serviceName": "Labour office and employment help",
+      "summary_en": "Domestic labour disputes, employment services, and labour-office routing are handled by MoLESS and labour offices.",
+      "summary_ne": "स्वदेशी श्रम विवाद, रोजगार सेवा र श्रम कार्यालय श्रम, रोजगार तथा सामाजिक सुरक्षा मन्त्रालयले हेर्छ।",
+      "aliases": [
+        "labour office",
+        "श्रम कार्यालय",
+        "moless",
+        "employment service",
+        "labor"
+      ],
+      "seeds": [
+        "https://moless.gov.np/",
+        "https://www.moless.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Foreign Employment",
+      "parent": "Ministry of Labour, Employment and Social Security",
+      "address": "Tahachal, Kathmandu, Nepal",
+      "intent": "foreign_employment_help",
+      "serviceName": "Foreign employment help",
+      "summary_en": "Labour permits, recruitment complaints, and migrant-worker protection are handled by the Department of Foreign Employment.",
+      "summary_ne": "वैदेशिक रोजगार अनुमति, उजुरी र श्रमिक संरक्षण वैदेशिक रोजगार विभागले हेर्छ।",
+      "aliases": [
+        "foreign employment",
+        "वैदेशिक रोजगार",
+        "labour permit",
+        "dofe",
+        "manpower"
+      ],
+      "seeds": [
+        "https://www.dofe.gov.np/",
+        "https://dofe.gov.np/"
+      ]
+    },
+    {
+      "name": "Social Security Fund",
+      "parent": "Ministry of Labour, Employment and Social Security",
+      "address": "Kathmandu, Nepal",
+      "intent": "social_security_help",
+      "serviceName": "Social security contribution help",
+      "summary_en": "Contribution-based social security (medical, accident, old age) is administered by the Social Security Fund.",
+      "summary_ne": "योगदानमा आधारित सामाजिक सुरक्षा कोषले स्वास्थ्य, दुर्घटना र वृद्धावस्था सुविधा हेर्छ।",
+      "aliases": [
+        "social security",
+        "सामाजिक सुरक्षा",
+        "ssf"
+      ],
+      "seeds": [
+        "https://ssf.gov.np/",
+        "https://www.ssf.gov.np/"
+      ]
+    },
+    {
+      "name": "Public Service Commission",
+      "parent": "Government of Nepal",
+      "address": "Anamnagar, Kathmandu, Nepal",
+      "intent": "loksewa_help",
+      "serviceName": "Public service exam help",
+      "summary_en": "Civil service vacancies and exams are administered by the Public Service Commission (Lok Sewa Aayog).",
+      "summary_ne": "निजामती सेवा विज्ञापन र परीक्षा लोक सेवा आयोगले सञ्चालन गर्छ।",
+      "aliases": [
+        "loksewa",
+        "लोक सेवा",
+        "psc",
+        "public service commission"
+      ],
+      "seeds": [
+        "https://psc.gov.np/",
+        "https://www.psc.gov.np/"
+      ]
+    },
+    {
+      "name": "Ministry of Education, Science and Technology",
+      "parent": "Government of Nepal",
+      "address": "Singhadurbar, Kathmandu, Nepal",
+      "intent": "education_help",
+      "serviceName": "School and scholarship routing",
+      "summary_en": "SEE, scholarships, and school-administration questions are routed through the Ministry of Education, Science and Technology and related offices.",
+      "summary_ne": "SEE, छात्रवृत्ति र विद्यालय प्रशासन शिक्षा, विज्ञान तथा प्रविधि मन्त्रालय र सम्बन्धित कार्यालयले हेर्छन्।",
+      "aliases": [
+        "scholarship",
+        "छात्रवृत्ति",
+        "education ministry",
+        "moest"
+      ],
+      "seeds": [
+        "https://moest.gov.np/",
+        "https://www.moest.gov.np/"
+      ]
+    },
+    {
+      "name": "National Examination Board",
+      "parent": "Ministry of Education, Science and Technology",
+      "address": "Sanothimi, Bhaktapur, Nepal",
+      "intent": "see_exam_help",
+      "serviceName": "SEE and board exam help",
+      "summary_en": "SEE and board examination notices, results, and registration are handled by the National Examination Board.",
+      "summary_ne": "SEE तथा बोर्ड परीक्षा सूचना, नतिजा र दर्ता राष्ट्रिय परीक्षा बोर्डले हेर्छ।",
+      "aliases": [
+        "SEE",
+        "neb",
+        "board exam",
+        "राष्ट्रिय परीक्षा बोर्ड",
+        "SLC"
+      ],
+      "seeds": [
+        "https://www.neb.gov.np/",
+        "https://neb.gov.np/"
+      ]
+    },
+    {
+      "name": "Council for Technical Education and Vocational Training",
+      "parent": "Government of Nepal",
+      "address": "Sanothimi, Bhaktapur, Nepal",
+      "intent": "ctevt_help",
+      "serviceName": "CTEVT and vocational training help",
+      "summary_en": "Technical and vocational training programmes and affiliation notices are handled by CTEVT.",
+      "summary_ne": "प्राविधिक तथा व्यावसायिक तालिम र सम्बन्धन सूचना CTEVT ले हेर्छ।",
+      "aliases": [
+        "CTEVT",
+        "vocational",
+        "प्राविधिक शिक्षा",
+        "diploma"
+      ],
+      "seeds": [
+        "https://www.ctevt.org.np/",
+        "https://ctevt.org.np/"
+      ]
+    },
+    {
+      "name": "Ministry of Health and Population",
+      "parent": "Government of Nepal",
+      "address": "Ramshahpath, Kathmandu, Nepal",
+      "intent": "public_health_help",
+      "serviceName": "Public health office routing",
+      "summary_en": "Public hospital and national health-programme routing is handled by the Ministry of Health and Population. This is not personal medical advice.",
+      "summary_ne": "सरकारी अस्पताल र राष्ट्रिय स्वास्थ्य कार्यक्रम स्वास्थ्य तथा जनसंख्या मन्त्रालयले रूट गर्छ। यो व्यक्तिगत चिकित्सा सल्लाह होइन।",
+      "aliases": [
+        "government hospital",
+        "सरकारी अस्पताल",
+        "mohp"
+      ],
+      "seeds": [
+        "https://mohp.gov.np/",
+        "https://www.mohp.gov.np/"
+      ]
+    },
+    {
+      "name": "Health Insurance Board",
+      "parent": "Government of Nepal",
+      "address": "Kathmandu, Nepal",
+      "intent": "health_insurance_help",
+      "serviceName": "Health insurance help",
+      "summary_en": "Enrolment and claims for the national health insurance programme are handled by the Health Insurance Board.",
+      "summary_ne": "राष्ट्रिय स्वास्थ्य बीमा भर्ना र दाबी स्वास्थ्य बीमा बोर्डले हेर्छ।",
+      "aliases": [
+        "health insurance",
+        "स्वास्थ्य बीमा",
+        "hib"
+      ],
+      "seeds": [
+        "https://hib.gov.np/",
+        "https://www.hib.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Transport Management",
+      "parent": "Government of Nepal",
+      "address": "Relevant transport management office, Nepal",
+      "intent": "driving_license_help",
+      "serviceName": "Driving license help",
+      "summary_en": "Driving license renewal and related issues are handled by a transport management office.",
+      "summary_ne": "सवारी चालक अनुमतिपत्र नवीकरण वा समस्या यातायात व्यवस्था कार्यालयले हेर्छ।",
+      "aliases": [
+        "driving license",
+        "लाइसेन्स",
+        "सवारी चालक अनुमतिपत्र",
+        "license renew"
+      ],
+      "seeds": [
+        "https://www.dotm.gov.np/",
+        "https://dotm.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Transport Management",
+      "parent": "Government of Nepal",
+      "address": "Relevant transport management office, Nepal",
+      "intent": "vehicle_registration_help",
+      "serviceName": "Vehicle registration help",
+      "summary_en": "Vehicle registration, bluebook, and number-plate matters are handled by transport management offices under DOTM.",
+      "summary_ne": "सवारी दर्ता, ब्लुबुक र नम्बर प्लेट यातायात व्यवस्था कार्यालयले हेर्छ।",
+      "aliases": [
+        "bluebook",
+        "vehicle registration",
+        "सवारी दर्ता",
+        "number plate"
+      ],
+      "seeds": [
+        "https://www.dotm.gov.np/",
+        "https://dotm.gov.np/"
+      ]
+    },
+    {
+      "name": "Nepal Telecom",
+      "parent": "Government of Nepal",
+      "address": "Bhadrakali Plaza, Kathmandu, Nepal",
+      "intent": "ntc_telecom_help",
+      "serviceName": "Nepal Telecom (NTC) help",
+      "summary_en": "NTC mobile, landline, and FTTH service questions are handled by Nepal Telecom offices and official NTC channels.",
+      "summary_ne": "NTC मोबाइल, ल्यान्डलाइन र FTTH सेवा नेपाल टेलिकम कार्यालय तथा आधिकारिक च्यानलले हेर्छ।",
+      "aliases": [
+        "NTC",
+        "Nepal Telecom",
+        "नेपाल टेलिकम",
+        "namaste SIM",
+        "FTTH"
+      ],
+      "seeds": [
+        "https://www.ntc.net.np/",
+        "https://ntc.net.np/"
+      ]
+    },
+    {
+      "name": "Nepal Electricity Authority",
+      "parent": "Government of Nepal",
+      "address": "Kathmandu, Nepal",
+      "intent": "nea_electricity_help",
+      "serviceName": "Electricity and NEA help",
+      "summary_en": "Electricity connections, billing, and outage notices are handled by the Nepal Electricity Authority.",
+      "summary_ne": "बिजुली जडान, बिल र लोडसेडिङ/आउटेज सूचना नेपाल विद्युत प्राधिकरणले हेर्छ।",
+      "aliases": [
+        "NEA",
+        "electricity",
+        "बिजुली",
+        "loadshedding",
+        "विद्युत"
+      ],
+      "seeds": [
+        "https://www.nea.org.np/",
+        "https://nea.org.np/"
+      ]
+    },
+    {
+      "name": "Nepal Telecommunications Authority",
+      "parent": "Government of Nepal",
+      "address": "Kathmandu, Nepal",
+      "intent": "telecom_complaint_help",
+      "serviceName": "Telecom complaint routing",
+      "summary_en": "Telecom service complaints and numbering issues can be taken to the Nepal Telecommunications Authority.",
+      "summary_ne": "दूरसञ्चार उजुरी र नम्बर सम्बन्धी विषय नेपाल दूरसञ्चार प्राधिकरणले हेर्छ।",
+      "aliases": [
+        "NTA",
+        "telecom complaint",
+        "दूरसञ्चार"
+      ],
+      "seeds": [
+        "https://nta.gov.np/",
+        "https://www.nta.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Postal Services",
+      "parent": "Government of Nepal",
+      "address": "Kathmandu, Nepal",
+      "intent": "postal_help",
+      "serviceName": "Postal and GPO help",
+      "summary_en": "Mail, parcel, and postal savings questions are handled by the Department of Postal Services / GPO.",
+      "summary_ne": "पत्र, पार्सल र हुलाक बचत हुलाक सेवा विभाग / GPO ले हेर्छ।",
+      "aliases": [
+        "post office",
+        "GPO",
+        "हुलाक",
+        "postal"
+      ],
+      "seeds": [
+        "https://www.gpo.gov.np/",
+        "https://gpo.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Land Management and Archive",
+      "parent": "Ministry of Land Management, Cooperatives and Poverty Alleviation",
+      "address": "Kathmandu, Nepal",
+      "intent": "land_registration_help",
+      "serviceName": "Land registration help",
+      "summary_en": "Land ownership records (lalpurja) and malpot services are handled by land revenue offices under the Department of Land Management and Archive.",
+      "summary_ne": "जग्गाधनी प्रमाणपुर्जा र मालपोत सेवा जग्गा व्यवस्था तथा अभिलेख विभाग अन्तर्गतका कार्यालयले हेर्छन्।",
+      "aliases": [
+        "lalpurja",
+        "जग्गाधनी",
+        "malpot",
+        "मालपोत",
+        "land registration"
+      ],
+      "seeds": [
+        "https://dolma.gov.np/",
+        "https://www.molcpa.gov.np/"
+      ]
+    },
+    {
+      "name": "Ministry of Federal Affairs and General Administration",
+      "parent": "Government of Nepal",
+      "address": "Singhadurbar, Kathmandu, Nepal",
+      "intent": "local_government_help",
+      "serviceName": "Local government and ward services",
+      "summary_en": "Ward-level recommendations, local registration, and municipal services are handled by local governments under MoFAGA.",
+      "summary_ne": "वडा सिफारिस, स्थानीय दर्ता र नगरपालिका सेवा सङ्घीय मामिला तथा सामान्य प्रशासन मन्त्रालय अन्तर्गत स्थानीय तहले हेर्छन्।",
+      "aliases": [
+        "ward",
+        "वडा",
+        "palika",
+        "नगरपालिका",
+        "gaunpalika",
+        "सिफारिस"
+      ],
+      "seeds": [
+        "https://www.mofaga.gov.np/",
+        "https://mofaga.gov.np/"
+      ]
+    },
+    {
+      "name": "Office of the Company Registrar",
+      "parent": "Ministry of Industry, Commerce and Supplies",
+      "address": "Tripureshwor, Kathmandu, Nepal",
+      "intent": "company_registration_help",
+      "serviceName": "Company registration help",
+      "summary_en": "Company incorporation and registry updates are handled by the Office of the Company Registrar.",
+      "summary_ne": "कम्पनी दर्ता र अद्यावधिक कम्पनी रजिस्ट्रारको कार्यालयले हेर्छ।",
+      "aliases": [
+        "company registration",
+        "कम्पनी दर्ता",
+        "ocr"
+      ],
+      "seeds": [
+        "https://ocr.gov.np/",
+        "https://www.ocr.gov.np/"
+      ]
+    },
+    {
+      "name": "Department of Tourism",
+      "parent": "Ministry of Culture, Tourism and Civil Aviation",
+      "address": "Kathmandu, Nepal",
+      "intent": "tourism_permit_help",
+      "serviceName": "Tourism and trekking permit routing",
+      "summary_en": "Trekking and tourism-permit questions are routed through the Department of Tourism and related immigration or conservation offices.",
+      "summary_ne": "ट्रेकिङ र पर्यटन अनुमति पर्यटन विभाग तथा सम्बन्धित अध्यागमन/संरक्षण कार्यालयले हेर्छन्।",
+      "aliases": [
+        "trekking permit",
+        "TIMS",
+        "पर्यटन",
+        "tourism department"
+      ],
+      "seeds": [
+        "https://www.tourismdepartment.gov.np/",
+        "https://www.tourism.gov.np/"
+      ]
+    }
+  ]
+}

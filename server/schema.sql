@@ -89,6 +89,27 @@ CREATE TABLE IF NOT EXISTS guardrail_events (
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS crawl_runs (
+  id SERIAL PRIMARY KEY,
+  started_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  finished_at TIMESTAMPTZ,
+  status TEXT NOT NULL DEFAULT 'running',
+  summary JSONB
+);
+
+CREATE TABLE IF NOT EXISTS crawl_pages (
+  id SERIAL PRIMARY KEY,
+  run_id INTEGER REFERENCES crawl_runs(id) ON DELETE CASCADE,
+  url TEXT NOT NULL,
+  agency_id INTEGER REFERENCES agencies(id) ON DELETE SET NULL,
+  http_status INTEGER,
+  fetched_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  content_hash TEXT,
+  verified BOOLEAN NOT NULL DEFAULT FALSE,
+  reason TEXT,
+  kind TEXT NOT NULL DEFAULT 'html'
+);
+
 CREATE INDEX IF NOT EXISTS service_aliases_alias_trgm_idx
   ON service_aliases USING GIN (alias gin_trgm_ops);
 
@@ -100,6 +121,9 @@ CREATE INDEX IF NOT EXISTS knowledge_chunks_service_id_idx
 
 CREATE INDEX IF NOT EXISTS knowledge_chunks_embedding_hnsw_idx
   ON knowledge_chunks USING hnsw (embedding vector_cosine_ops);
+
+CREATE INDEX IF NOT EXISTS crawl_pages_url_idx
+  ON crawl_pages (url);
 
 CREATE TABLE IF NOT EXISTS chat_sessions (
   id TEXT PRIMARY KEY,

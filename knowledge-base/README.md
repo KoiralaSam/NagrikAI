@@ -39,3 +39,8 @@ npm run ingest-knowledge -- --dry-run
 ```
 
 Re-run ingest after adding or editing files. Unchanged checksums are skipped.
+
+## Official crawl
+
+`npm run crawl-knowledge` fetches allowlisted Nepal government sites from `server/data/official-catalog.json`, verifies contacts against the page text, writes markdown here under `crawled/`, upserts SQL rows, and re-embeds. Official social posts are included only when they have a date and are less than 90 days old.
+

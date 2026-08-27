@@ -3,7 +3,7 @@ const path = require("path");
 const mammoth = require("mammoth");
 
 const TEXT_EXTENSIONS = new Set([".txt", ".md"]);
-const SKIP_NAMES = new Set(["readme.md", "manifest.json"]);
+const SKIP_NAMES = new Set(["readme.md", "manifest.json", "services.md"]);
 
 function parseFrontmatter(raw) {
   const text = String(raw ?? "").replace(/^\uFEFF/, "");
@@ -108,12 +108,13 @@ async function loadDocument(filePath, rootDir, manifest = {}) {
     ...parsed.data,
   });
 
+  const fallbackTitle = path.parse(filePath).name.replace(/[-_]/g, " ");
   return {
+    ...meta,
     filename: relative,
-    title: meta.title || path.parse(filePath).name.replace(/[-_]/g, " "),
+    title: meta.title || fallbackTitle,
     body: parsed.body,
     checksum: require("crypto").createHash("sha256").update(raw).digest("hex"),
-    ...meta,
   };
 }
 

@@ -108,6 +108,11 @@ See `.env.example`.
 | `EMBEDDING_DIMENSIONS` | Must match `vector(1024)` in `schema.sql` |
 | `KNOWLEDGE_BASE_DIR` | Document drop folder (default repo `knowledge-base/`) |
 | `ASK_RATE_MAX` / `ASK_RATE_WINDOW_MS` | `/api/ask` limit per IP + deviceId |
+| `CRAWL_DELAY_MS` | Delay between HTTP fetches (default `1500`) |
+| `CRAWL_MAX_PAGES_PER_AGENCY` | Per-agency page cap (default `8`) |
+| `SOCIAL_MAX_AGE_DAYS` | Max age for social/news items (default `90`) |
+| `FACEBOOK_ACCESS_TOKEN` | Optional Graph API token for official page posts |
+| `TWITTER_BEARER_TOKEN` | Optional X API token for official account posts |
 
 Priority: `ENABLE_LLM=false` → templates. Else if `LLM_BASE_URL` is set → local Qwen (thinking **off**). Else if `OPENAI_API_KEY` → OpenAI. Else templates.
 
@@ -123,7 +128,33 @@ npm run ingest-knowledge
 npm run ingest-knowledge -- --dry-run
 ```
 
-`npm run init-db` reseeds agencies/services and truncates document chunks. Re-run ingest after that.
+`npm run init-db` reseeds agencies/services and truncates document chunks. Re-run ingest after that. Crawl history (`crawl_runs` / `crawl_pages`) is also truncated; run `npm run crawl-knowledge` again to refresh verified contacts.
+
+## Official source crawler
+
+The crawler verifies and updates SQL rows plus embeddings from **allowlisted official sources only**. It does not search the open web.
+
+```bash
+npm run crawl-knowledge -- --dry-run
+npm run crawl-knowledge -- --intent passport_problem
+npm run crawl-knowledge
+```
+
+`--dry-run` fetches and extracts but does not write the database or `knowledge-base/crawled/`. `--no-embed` skips re-embedding. `--intent passport_problem,pan_tax_help` limits the catalog.
+
+**Standing pages** (contact / about / service pages on `.gov.np`, plus a few extra hosts in the catalog) can update `agencies`, `services`, `contacts`, `sources`, and `knowledge_notes` when the phone or email actually appears on that page.
+
+**Social / news** (Facebook, X, YouTube, site RSS) is used only if:
+
+- the account was listed in the catalog or linked from that agency’s official website
+- the item has a parseable date
+- the date is **< 90 days** old (`SOCIAL_MAX_AGE_DAYS`)
+
+Facebook and X **posts** need `FACEBOOK_ACCESS_TOKEN` / `TWITTER_BEARER_TOKEN`. Without those tokens the crawler still stores official profile URLs as `contacts.type = social` and still reads YouTube RSS plus RSS/Atom feeds advertised on the official site. It will not scrape Facebook HTML or ingest undated posts.
+
+Officer mobile directories (for example long IRD information-officer tables) are not stored as citizen hotlines. Landlines, enquiry/hotline numbers, and `@*.gov.np` emails are preferred.
+
+See `data/official-catalog.json` to add another ministry or service. New intents become retrievable after a successful crawl (or a seed insert).
 
 ## Local Qwen3-0.6B (non-thinking)
 
@@ -187,6 +218,7 @@ Install Node.js and PostgreSQL, create a database, set `DATABASE_URL`, then run:
 npm install --omit=dev
 npm run init-db
 npm run ingest-knowledge
+npm run crawl-knowledge
 PORT=8080 npm start
 ```
 

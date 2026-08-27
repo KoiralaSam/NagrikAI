@@ -19,6 +19,7 @@ async function main() {
 
   console.log("PostgreSQL schema and seed data applied.");
   console.log("Embed knowledge-base documents with: npm run ingest-knowledge");
+  console.log("Refresh official contacts from allowlisted sites with: npm run crawl-knowledge");
 }
 
 main().catch((error) => {

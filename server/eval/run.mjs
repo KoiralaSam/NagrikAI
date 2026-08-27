@@ -131,6 +131,103 @@ function runUnitTests(results) {
     "unit:chunker",
     `chunks=${chunks.length}`,
   );
+
+  const { extractPhones, extractEmails, isFreshDate, stripContactClaims } = require("../lib/crawler/extract.js");
+  const { isAllowlistedUrl } = require("../lib/crawler/allowlist.js");
+  const { verifySocialItem, verifyContact } = require("../lib/crawler/verify.js");
+  const { loadCatalog } = require("../lib/crawler/catalog.js");
+
+  const catalog = loadCatalog();
+  const passportHtml =
+    "Enquiry: +97715970330 communication@nepalpassport.gov.np Spokesperson 9851352001";
+  const phones = extractPhones(passportHtml);
+  record(
+    results,
+    phones.some((phone) => phone.value.includes("15970330")) &&
+      !phones.some((phone) => phone.value.includes("9851352001")),
+    "unit:crawl-phone-priority",
+    phones.map((phone) => phone.value).join(","),
+  );
+
+  const emails = extractEmails(
+    "write info@nepalpassport.gov.np or someone@gmail.com",
+    catalog,
+  );
+  record(
+    results,
+    emails.some((email) => email.value === "info@nepalpassport.gov.np") &&
+      !emails.some((email) => email.value.includes("gmail")),
+    "unit:crawl-official-email",
+    emails.map((email) => email.value).join(","),
+  );
+
+  record(
+    results,
+    isAllowlistedUrl("https://nepalpassport.gov.np/en", catalog) &&
+      !isAllowlistedUrl("https://random-blog.example/passport", catalog),
+    "unit:crawl-allowlist",
+    "gov.np allowed, random host blocked",
+  );
+
+  const fresh = verifySocialItem(
+    {
+      url: "https://www.facebook.com/MOFANEPAL/posts/1",
+      publishedAt: new Date(),
+    },
+    catalog,
+    ["https://www.facebook.com/MOFANEPAL/"],
+  );
+  const stale = verifySocialItem(
+    {
+      url: "https://www.facebook.com/MOFANEPAL/posts/1",
+      publishedAt: new Date(Date.now() - 100 * 24 * 60 * 60 * 1000),
+    },
+    catalog,
+    ["https://www.facebook.com/MOFANEPAL/"],
+  );
+  const undated = verifySocialItem(
+    { url: "https://www.facebook.com/MOFANEPAL/posts/1", publishedAt: null },
+    catalog,
+    ["https://www.facebook.com/MOFANEPAL/"],
+  );
+  record(
+    results,
+    fresh.ok && !stale.ok && !undated.ok,
+    "unit:crawl-social-90d",
+    `fresh=${fresh.reason} stale=${stale.reason} undated=${undated.reason}`,
+  );
+
+  const groundedPhone = verifyContact(
+    { type: "phone", value: "+97715970330" },
+    passportHtml,
+    catalog,
+  );
+  const inventedPhone = verifyContact(
+    { type: "phone", value: "9800000000" },
+    passportHtml,
+    catalog,
+  );
+  record(
+    results,
+    groundedPhone.ok && !inventedPhone.ok,
+    "unit:crawl-contact-on-page",
+    `${groundedPhone.reason}/${inventedPhone.reason}`,
+  );
+
+  record(
+    results,
+    !stripContactClaims(passportHtml).includes("15970330") &&
+      !stripContactClaims(passportHtml).includes("@"),
+    "unit:crawl-strip-claims",
+    stripContactClaims(passportHtml),
+  );
+
+  record(
+    results,
+    isFreshDate(new Date()) && !isFreshDate(new Date(Date.now() - 100 * 24 * 60 * 60 * 1000)),
+    "unit:crawl-fresh-date",
+    "90-day window",
+  );
 }
 
 async function dbReady() {

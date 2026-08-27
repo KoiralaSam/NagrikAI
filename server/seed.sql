@@ -1,4 +1,4 @@
-TRUNCATE guardrail_events, knowledge_chunks, knowledge_documents, knowledge_notes, sources, contacts, service_aliases, services, agencies RESTART IDENTITY CASCADE;
+TRUNCATE guardrail_events, crawl_pages, crawl_runs, knowledge_chunks, knowledge_documents, knowledge_notes, sources, contacts, service_aliases, services, agencies RESTART IDENTITY CASCADE;
 
 INSERT INTO agencies (name, parent, address, last_verified_at, verification_status)
 VALUES

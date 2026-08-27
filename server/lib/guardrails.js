@@ -1,4 +1,5 @@
 const db = require("./db");
+const { loadCatalog } = require("./crawler/catalog");
 
 const allowedTerms = [
   "government",
@@ -23,6 +24,8 @@ const allowedTerms = [
   "ird",
   "mofa",
   "dotm",
+  "ntc",
+  "nea",
   "नेपाल",
   "सरकार",
   "कार्यालय",
@@ -41,14 +44,25 @@ const allowedTerms = [
   "दूतावास",
 ];
 
+try {
+  for (const agency of loadCatalog().agencies || []) {
+    for (const alias of agency.aliases || []) {
+      if (alias && !allowedTerms.includes(alias)) {
+        allowedTerms.push(alias);
+      }
+    }
+  }
+} catch {
+  // Catalog is optional for unit tests that only check static terms.
+}
+
 const blockedTerms = [
   "poem",
   "joke",
   "recipe",
   "dating",
   "homework",
-  "investment",
-  "stock",
+  "stock tip",
   "crypto",
   "bitcoin",
   "medical diagnosis",

@@ -8,10 +8,13 @@
     "start": "node server.js",
     "init-db": "node scripts/init-db.js",
     "ingest-knowledge": "node scripts/ingest-knowledge.js",
+    "crawl-knowledge": "node scripts/crawl-knowledge.js",
+    "sync-crawled": "node scripts/sync-crawled-services.js",
     "eval": "node eval/run.mjs"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
+    "cheerio": "^1.1.2",
     "mammoth": "^1.11.0",
     "pg": "^8.16.3"
   }
