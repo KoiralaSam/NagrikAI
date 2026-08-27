@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import * as Speech from "expo-speech";
 import { ResultExtras } from "./ResultExtras";
+import { SpeakerIcon } from "./SpeakerIcon";
 import { colors } from "../theme/colors";
 import { ChatMessage, LanguageCode } from "../types/agent";
 
@@ -10,6 +12,8 @@ type Props = {
 };
 
 export function ChatBubble({ message, language }: Props) {
+  const [speaking, setSpeaking] = useState(false);
+
   if (message.role === "system") {
     return (
       <View style={styles.systemWrap}>
@@ -21,11 +25,21 @@ export function ChatBubble({ message, language }: Props) {
   const isUser = message.role === "user";
 
   const speak = () => {
+    if (speaking) {
+      Speech.stop();
+      setSpeaking(false);
+      return;
+    }
+
     Speech.stop();
+    setSpeaking(true);
     Speech.speak(message.text, {
       language,
       pitch: 1,
       rate: 0.92,
+      onDone: () => setSpeaking(false),
+      onStopped: () => setSpeaking(false),
+      onError: () => setSpeaking(false),
     });
   };
 
@@ -36,11 +50,17 @@ export function ChatBubble({ message, language }: Props) {
           {message.text}
         </Text>
         {!isUser && message.result ? (
-          <ResultExtras result={message.result} language={language} />
+          <ResultExtras answerText={message.text} result={message.result} />
         ) : null}
         {!isUser ? (
-          <Pressable onPress={speak} style={styles.speak}>
-            <Text style={styles.speakLabel}>Play</Text>
+          <Pressable
+            accessibilityLabel={speaking ? "Stop speaking" : "Play reply"}
+            accessibilityRole="button"
+            hitSlop={8}
+            onPress={speak}
+            style={styles.speak}
+          >
+            <SpeakerIcon active={speaking} />
           </Pressable>
         ) : null}
       </View>
@@ -87,13 +107,9 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   speak: {
-    alignSelf: "flex-start",
-    marginTop: 8,
-  },
-  speakLabel: {
-    color: colors.primaryDark,
-    fontSize: 12,
-    fontWeight: "800",
+    alignSelf: "flex-end",
+    marginTop: 6,
+    padding: 2,
   },
   systemWrap: {
     alignItems: "center",
